@@ -1,0 +1,79 @@
+:root {
+	--grid-cols: 1;
+	--grid-rows: 1;
+	margin: 0;
+}
+
+.header-container {
+	height: 50px;
+}
+
+.start-button.active {
+	background: green;
+	color: white;
+}
+
+.end-button.active {
+	background: red;
+	color: white;
+}
+
+.wall-button.active {
+	background: black;
+	color: white;
+}
+
+.erase-walls-button.active {
+	background: black;
+	color: white;
+}
+
+.erase-all-walls-button.active {
+	background: black;
+	color: white;
+}
+
+.erase-all-button.active {
+	background: blue;
+	color: white;
+}
+
+.calculate-button.active {
+	background: blue;
+	color: white;
+}
+
+.container {
+	height: calc(100% - 50px);
+	width: 100%;
+}
+
+.grid {
+	display: grid;
+	border: 1px solid green;
+	grid-template-rows: repeat(var(--grid-rows), 1fr);
+	grid-template-columns: repeat(var(--grid-cols), 1fr);
+	height: 100%;
+}
+
+.grid-item {
+	padding: 1px;
+	border: 1px solid #ddd;
+	text-align: center;
+}
+
+.start {
+	background: green;
+}
+
+.end {
+	background: red;
+}
+
+.wall {
+	background: black;
+}
+
+.path {
+	background: yellow;
+}

@@ -2,11 +2,11 @@
 import { canvas, context } from './elements.js';
 import { rowCount, canvasWidth } from './constants.js';
 import { gridArray, exportColCount } from './setup.js';
-import * as _State from './state.js';
+import * as _Cell from './cell.js';
 
-// startState, endState, State
-let startState = _State.startState;
-let endState = _State.endState;
+// startCell, endCell, Cell
+let startCell = _Cell.startCell;
+let endCell = _Cell.endCell;
 
 const disableButtons = exception => {
 	document.querySelectorAll('.buttons').forEach(button => {
@@ -18,9 +18,9 @@ const disableButtons = exception => {
 const place = (which, position) => {
 	switch (which) {
 		case 'start':
-			startState && erase(which);
-			startState = gridArray[position.x][position.y];
-			startState.show('green');
+			startCell && erase(which);
+			startCell = gridArray[position.x][position.y];
+			startCell.show('green');
 			return;
 		
 		case 'wall':
@@ -29,9 +29,9 @@ const place = (which, position) => {
 			return;
 		
 		case 'end':
-			endState && erase(which);
-			endState = gridArray[position.x][position.y];
-			endState.show('red');
+			endCell && erase(which);
+			endCell = gridArray[position.x][position.y];
+			endCell.show('red');
 			return;
 
 		default:
@@ -43,49 +43,49 @@ const place = (which, position) => {
 const erase = which => {
 	switch (which) {
 		case 'start':
-			startState.show('#ddd');
-			startState = null;
+			startCell.show('#ddd');
+			startCell = null;
 			return;
 		
 		case 'walls':
 			gridArray.forEach(array => {
-				array.forEach(state => {
-					if (state.isWall) {
-						state.isWall = false;
-						state.show('#ddd');
+				array.forEach(cell => {
+					if (cell.isWall) {
+						cell.isWall = false;
+						cell.show('#ddd');
 					}
 				});
 			});
 			return;
 		
 		case 'end':
-			endState.show('#ddd');
-			endState = null;
+			endCell.show('#ddd');
+			endCell = null;
 			return;		
 
 		case 'paths':
 			// reset color and status of anything not a wall
 			gridArray.forEach(array => {
-				array.forEach(state => {
-					if (!state.isWall) {
-						state.isPath = false;
-						state.weight = 0;
-						state.show('#ddd');
+				array.forEach(cell => {
+					if (!cell.isWall) {
+						cell.isPath = false;
+						cell.weight = 0;
+						cell.show('#ddd');
 					}
 				});
 			});
 			return;
 
 		case 'all':
-			startState && erase('start');
-			endState && erase('end');
+			startCell && erase('start');
+			endCell && erase('end');
 
 			gridArray.forEach(array => {
-				array.forEach(state => {
-					state.isPath = false;
-					state.isWall = false;
-					state.weight = 0;
-					state.show('#ddd');
+				array.forEach(cell => {
+					cell.isPath = false;
+					cell.isWall = false;
+					cell.weight = 0;
+					cell.show('#ddd');
 				});
 			});
 			return;
@@ -142,12 +142,14 @@ const getMousePosition = event => {
 	return position;
 }
 
-const exportStartState = () => {
-	return startState;
+// function to export the variable startCell
+const exportStartCell = () => {
+	return startCell;
 }
 
-const exportEndState = () => {
-	return endState;
+// function to export the variable endCell
+const exportEndCell = () => {
+	return endCell;
 }
 
-export { disableButtons, place, erase, eraseWall, getMousePosition, exportStartState, exportEndState };
+export { disableButtons, place, erase, eraseWall, getMousePosition, exportStartCell, exportEndCell };

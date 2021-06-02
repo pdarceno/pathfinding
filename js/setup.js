@@ -1,9 +1,9 @@
 'use strict';
-import * as _State from './state.js';
+import * as _Cell from './cell.js';
 import * as Element from './elements.js';
 import * as Constant from './constants.js';
 
-const State = _State.State;
+const Cell = _Cell.Cell;
 
 const canvasWidth = Constant.canvasWidth;
 const canvasHeight = Constant.canvasHeight;
@@ -18,7 +18,7 @@ const context = Element.context;
 let colCount = 0;
 
 let gridArray = new Array(rowCount);
-// array of the path States
+// array of the path Cells
 let totalPath = new Array();
 
 // setup all the neccessities
@@ -50,18 +50,18 @@ const setup = () => {
 		context.stroke();
 	}
 
-	// setup States
+	// setup Cells
 	for (let i = 0; i < rowCount; i++) {
 		gridArray[i] = new Array(colCount);
 		for (let j = 0; j < colCount; j++) {
-			gridArray[i][j] = new State(i, j);
+			gridArray[i][j] = new Cell(i, j);
 		}
 	}
 
 	context.closePath();
 }
 
-
+// function to export the variable colcount
 const exportColCount = () => {
 	return colCount;
 }

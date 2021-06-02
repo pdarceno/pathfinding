@@ -5,8 +5,8 @@ import { rowCount } from '../constants.js';
 import { timeLabel } from '../elements.js';
 
 /*========================================= NODE =========================================*/
-const startState = Util.exportStartState;
-const endState = Util.exportEndState;
+const startCell = Util.exportStartCell;
+const endCell = Util.exportEndCell;
 const erase = Util.erase;
 /*========================================= NODE =========================================*/
 
@@ -18,19 +18,19 @@ let totalPath = Setup.totalPath;
 
 /*========================================= START OF A STAR ALGORITHM =========================================*/
 
-function reconstructPath(state, end = false) {
-	const origin = state.cameFrom;
-	// include state if end
-	end && totalPath.push(state);
+function reconstructPath(cell, end = false) {
+	const origin = cell.cameFrom;
+	// include cell if end
+	end && totalPath.push(cell);
 	if (origin) {
 		totalPath.push(origin);
 		return reconstructPath(origin);
 	}
 
 	// reconstruct path backwards
-	totalPath.forEach((currentState, i) => {
+	totalPath.forEach((currentCell, i) => {
 		setTimeout(() => {
-			color('path', currentState);
+			color('path', currentCell);
 		}, 50 * (totalPath.length - i));
 	});
 }
@@ -39,66 +39,70 @@ function reconstructPath(state, end = false) {
 const startAStarAlgorithm = () => {
 	// check time
 
-	if (!startState() && !endState()) {
+	if (!startCell() && !endCell()) {
 		return;
 	}
+	// counter timer multiplier
+	let counter = 0;
 	// reset path array
 	totalPath = [];
 	erase('paths');
-	// openSet are all the list of states that are passed
+	// openSet are all the list of cells that are passed
 	let openSet = new Array();
 	let closedSet = new Array();
-	/* For state n, cameFrom[n] is the state immediately preceding it on the cheapest path from start
+	/* For cell n, cameFrom[n] is the cell immediately preceding it on the cheapest path from start
 	to n currently known. */
 	let cameFrom = new Array();
-	// Initially, only the start state is known.
-	openSet.push(startState()); 
-	// startstate gscore is 0
-	startState().gScore = 0;
+	// Initially, only the start cell is known.
+	openSet.push(startCell()); 
+	// startcell gscore is 0
+	startCell().gScore = 0;
 	// while openSet is not empty
 	const start = performance.now();
 	while(openSet.length > 0) {
-		let currentState = openSet[0];
+		let currentCell = openSet[0];
 
 		// make a heap sort for O(1)
 		for(let i = 0; i < openSet.length; i++) {
-			if(openSet[i].fScore < currentState.fScore) {
-				currentState = openSet[i];
+			if(openSet[i].fScore < currentCell.fScore) {
+				currentCell = openSet[i];
 			}
 		}
 
 		//done
-		if(currentState === endState()) {
+		if(currentCell === endCell()) {
 			timeLabel.innerHTML = `time: ${performance.now() - start} ms`;
 			console.log('reconstruct path');
-			return reconstructPath(endState(), true);
+			return reconstructPath(endCell(), true);
 		}
-		// remove currentState to the openSet
-		openSet.splice(openSet.indexOf(currentState), 1);
-		closedSet.push(currentState);
+		// remove currentCell to the openSet
+		openSet.splice(openSet.indexOf(currentCell), 1);
+		closedSet.push(currentCell);
 
-		//color the state once pushed into the array
-		color('closed', currentState);
+		//color the cell once pushed into the array
+		setTimeout(() => {
+			color('closed', currentCell);
+		}, 1 * counter);
 		// assign neighbors
-		getNeighbors(currentState);
+		getNeighbors(currentCell);
 
-		// //check state's neighbors
-		for (let i = 0; i < currentState.neighbors.length; i++) {
+		// //check cell's neighbors
+		for (let i = 0; i < currentCell.neighbors.length; i++) {
 			// retrieve the neigbor with lowest f value
-			let neighbor = currentState.neighbors[i];
+			let neighbor = currentCell.neighbors[i];
 			if (closedSet.includes(neighbor) || neighbor.isWall) {
 				// Ignore the neighbor which is already evaluated or a wall.
 				continue;
 			}
 			// tentativeG is the distance from start to the neighbor through current
-			let tentativeG = currentState.gScore + calculateDistance(currentState, neighbor);
+			let tentativeG = currentCell.gScore + calculateDistance(currentCell, neighbor);
 			
 			// add neighbor to openSet if not already present
 			if (openSet.includes(neighbor)) {
 
 				if (tentativeG < neighbor.gScore) {
 					// This path to neighbor is better than any previous one. Record it!
-					neighbor.cameFrom = currentState;
+					neighbor.cameFrom = currentCell;
 					neighbor.gScore = tentativeG;
 				}
 				 // This is not a better path
@@ -106,39 +110,37 @@ const startAStarAlgorithm = () => {
 			}
 
 			// neighbor not in set
-			neighbor.cameFrom = currentState;
+			neighbor.cameFrom = currentCell;
 			neighbor.gScore = tentativeG;
 			// push into the openSet array if not included
 			openSet.push(neighbor);
-			//color the state once pushed into the array
-			color('open', neighbor);
+			//color the cell once pushed into the array
+			setTimeout(() => {
+				color('open', neighbor);
+			}, 1 * counter);
 
 			neighbor.fScore = neighbor.gScore + calculateHScore(neighbor);
 		}
+		// increase counter
+		counter++;
 	}
 
 	console.log('failure');
 }
 
 // color functions
-const color = (which, state) => {
+const color = (which, cell) => {
 	switch (which) {
 		case 'open':
-			setTimeout(() => {
-				state.show('blue');
-			}, 0);
+			cell.show('blue');
 			return;
 		
 		case 'closed':
-			setTimeout(() => {
-				state.show('orange');
-			}, 0);
+			cell.show('orange');
 			return;
 		
 		case 'path':
-			setTimeout(() => {
-				state.show('yellow');
-			}, 0);
+			cell.show('yellow');
 			return;
 
 		default:
@@ -146,39 +148,27 @@ const color = (which, state) => {
 	}
 }
 
-const colorOpen = state => {
-	setTimeout(() => {
-		state.show('blue');
-	}, 0);
-}
-
-const colorClosed = state => {
-	setTimeout(() => {
-		state.show('red');
-	}, 0);
-}
-
-const getNeighbors = currentState => {
+const getNeighbors = currentCell => {
 	const rowLimit = rowCount - 1;
 	const colLimit = colCount() - 1;
 
-	let currentRow = currentState.row;
-	let currentCol = currentState.col;
+	let currentRow = currentCell.row;
+	let currentCol = currentCell.col;
 	// reset neighbors
-	currentState.neighbors = [];
-	// loop through neigbors and add to each individual current state 
+	currentCell.neighbors = [];
+	// loop through neigbors and add to each individual current cell 
 	// minimum index is always 0. Maximum index is always each respective limit
 	for(let i = Math.max(0, currentRow - 1); i <= Math.min(currentRow + 1, rowLimit); i++) {
 		for(let j = Math.max(0, currentCol - 1); j <= Math.min(currentCol + 1, colLimit); j++) {
 			if(i !== currentRow || j !== currentCol) {
-				currentState.neighbors.push(gridArray[i][j]);
+				currentCell.neighbors.push(gridArray[i][j]);
 			}
 		}
 	}
 }
 
-const calculateHScore = state => {
-	let distance = Math.sqrt(Math.pow((state.row - endState().row), 2) + Math.pow((state.col - endState().col), 2));
+const calculateHScore = cell => {
+	let distance = Math.sqrt(Math.pow((cell.row - endCell().row), 2) + Math.pow((cell.col - endCell().col), 2));
 	return distance;
 }
 

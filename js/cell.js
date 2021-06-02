@@ -4,7 +4,7 @@ import * as Constant from './constants.js';
 
 const cellDimension = Constant.cellDimension;
 
-class State {
+class Cell {
 	constructor (row, col) {
 		// save current index (row, col) to know where in the canvas it is
 		this.row = row;
@@ -13,14 +13,14 @@ class State {
 		this.isPath = false;
 		// check if is an obstacle
 		this.isWall = false;
-		// the weight of the State for weighted pathfinding
+		// the weight of the Cell for weighted pathfinding
 		this.weight = 0;
-		// For State n, n.gScore is the cost of the cheapest path from start to n currently known.
+		// For Cell n, n.gScore is the cost of the cheapest path from start to n currently known.
 		this.gScore = Infinity; 
-		/* For State n, n.cameFrom is the State immediately preceding it on the cheapest path from start
+		/* For Cell n, n.cameFrom is the Cell immediately preceding it on the cheapest path from start
 		 to n currently known. */
 		this.fScore = Infinity;
-		// heuristic can be a computed value since it is just the distance to end State, so it does not need to be saved.
+		// heuristic can be a computed value since it is just the distance to end Cell, so it does not need to be saved.
 		this.cameFrom = null;
 		this.neighbors = new Array();
 
@@ -34,7 +34,7 @@ class State {
 }
 
 //start and finish
-let startState = new State();
-let endState = new State();
+let startCell = new Cell();
+let endCell = new Cell();
 
-export { startState, endState, State };
+export { startCell, endCell, Cell };

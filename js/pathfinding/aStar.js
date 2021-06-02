@@ -1,12 +1,13 @@
 'use strict';
 import * as Util from '../utils.js';
 import * as Setup from '../setup.js';
-import { erase } from '../utils.js';
 import { rowCount } from '../constants.js';
+import { timeLabel } from '../elements.js';
 
 /*========================================= NODE =========================================*/
 const startState = Util.exportStartState;
 const endState = Util.exportEndState;
+const erase = Util.erase;
 /*========================================= NODE =========================================*/
 
 /*========================================= SETUP =========================================*/
@@ -16,6 +17,7 @@ let totalPath = Setup.totalPath;
 /*========================================= SETUP =========================================*/
 
 /*========================================= START OF A STAR ALGORITHM =========================================*/
+
 function reconstructPath(state, end = false) {
 	const origin = state.cameFrom;
 	// include state if end
@@ -35,7 +37,8 @@ function reconstructPath(state, end = false) {
 
 
 const startAStarAlgorithm = () => {
-	console.log(startState())
+	// check time
+
 	if (!startState() && !endState()) {
 		return;
 	}
@@ -53,6 +56,7 @@ const startAStarAlgorithm = () => {
 	// startstate gscore is 0
 	startState().gScore = 0;
 	// while openSet is not empty
+	const start = performance.now();
 	while(openSet.length > 0) {
 		let currentState = openSet[0];
 
@@ -65,6 +69,7 @@ const startAStarAlgorithm = () => {
 
 		//done
 		if(currentState === endState()) {
+			timeLabel.innerHTML = `time: ${performance.now() - start} ms`;
 			console.log('reconstruct path');
 			return reconstructPath(endState(), true);
 		}

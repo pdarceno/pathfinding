@@ -1,5 +1,6 @@
 'use strict';
 
+// buttons
 const menu = document.querySelector('.menu');
 const startButton = document.querySelector('.start-button');
 const endButton = document.querySelector('.end-button');
@@ -9,8 +10,11 @@ const eraseAllWallsButton = document.querySelector('.erase-all-walls-button');
 const eraseAllButton = document.querySelector('.erase-all-button');
 const calculateButton = document.querySelector('.calculate-button');
 
+// labels
+const timeLabel = document.querySelector('.time-label');
+
 // the canvas
 const canvas = document.querySelector('.canvas');
 const context = canvas.getContext('2d');
 
-export { menu, startButton, endButton, wallButton, eraseWallButton, eraseAllWallsButton, eraseAllButton, calculateButton, canvas, context };
+export { menu, startButton, endButton, wallButton, eraseWallButton, eraseAllWallsButton, eraseAllButton, calculateButton, timeLabel, canvas, context };

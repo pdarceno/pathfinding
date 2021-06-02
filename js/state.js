@@ -26,7 +26,7 @@ class State {
 
 		this.show = color => {
 			context.beginPath();
-			context.rect((this.row * cellDimension) + 1, (this.col * 20) + 1, cellDimension - 2, cellDimension - 2);
+			context.rect((this.row * cellDimension) + 1, (this.col * cellDimension) + 1, cellDimension - 2, cellDimension - 2);
 			context.fillStyle = color;
 			context.fill();
 		}

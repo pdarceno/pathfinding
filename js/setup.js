@@ -5,6 +5,8 @@ import * as Constant from './constants.js';
 
 const State = _State.State;
 
+const canvasWidth = Constant.canvasWidth;
+const canvasHeight = Constant.canvasHeight;
 const cellDimension = Constant.cellDimension;
 const rowCount = Constant.rowCount;
 
@@ -23,11 +25,11 @@ let totalPath = new Array();
 const setup = () => {
 	context.beginPath();
 	context.fillStyle = '#ddd';
-	context.fillRect(0, 0, canvas.width, canvas.height);
-	for (let i = 0; i < canvas.width; i+=cellDimension) {
+	context.fillRect(0, 0, canvasWidth, canvasHeight);
+	for (let i = 0; i < canvasWidth; i+=cellDimension) {
 		// vertical line
 		context.moveTo(i, 0);
-		context.lineTo(i, canvas.height);
+		context.lineTo(i, canvasHeight);
 
 		context.strokeStyle = 'white';
 		context.stroke();
@@ -37,12 +39,12 @@ const setup = () => {
 
 	context.beginPath();
 	context.fillStyle = '#ddd';
-	for (let i = 0; i < canvas.height; i+=cellDimension) {
+	for (let i = 0; i < canvasHeight; i+=cellDimension) {
 		// count the columns drawn
 		colCount++;
 		// horizontal line
 		context.moveTo(0, i);
-		context.lineTo(canvas.width, i);
+		context.lineTo(canvasWidth, i);
 
 		context.strokeStyle = 'white';
 		context.stroke();

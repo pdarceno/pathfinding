@@ -1,7 +1,7 @@
 'use strict';
-import { canvas } from './elements.js';
-import { rowCount } from './constants.js';
-import { gridArray } from './setup.js';
+import { canvas, context } from './elements.js';
+import { rowCount, canvasWidth } from './constants.js';
+import { gridArray, exportColCount } from './setup.js';
 import * as _State from './state.js';
 
 // startState, endState, State
@@ -111,8 +111,21 @@ const getMousePosition = event => {
 
 	let cellX = 0;
 	let cellY = 0;
+
+	context.beginPath(); // begin
+
+	context.lineWidth = 5;
+	context.lineCap = 'round';
+	context.strokeStyle = 'purple';
+
+	context.moveTo(x, y); // from
+	context.lineTo(x, y); // to
+
+	context.stroke(); // draw it
+
 	// bounds of the square unit can depend on just row
-	const bounds = canvas.width / rowCount;
+	const bounds = canvasWidth / rowCount;
+
 
 	for (let i = 0; i < rowCount; i++) {
 		if (x > (bounds * i)){
@@ -125,6 +138,7 @@ const getMousePosition = event => {
 	}
 
 	const position = {x: cellX, y: cellY};
+	console.log(exportColCount())
 	return position;
 }
 

@@ -4,8 +4,11 @@ import { canvas } from './elements.js';
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 
+
+const canvasWidth = canvas.width;
+const canvasHeight = canvas.height;
 // fixed
 const rowCount = 80;
-const cellDimension = canvas.width / rowCount;
+const cellDimension = canvasWidth / rowCount;
 
-export { rowCount, cellDimension};
+export { canvasWidth, canvasHeight, rowCount, cellDimension};

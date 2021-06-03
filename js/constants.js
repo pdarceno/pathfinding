@@ -1,5 +1,9 @@
 'use strict';
-import { canvasContainer, canvas, context } from './elements.js';
+import * as Element from './elements.js';
+
+const canvasContainer = Element.canvasContainer;
+const canvas = Element.canvas;
+const context = Element.context;
 
 /*COLORS*/
 const wallColor = '#000';

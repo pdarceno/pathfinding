@@ -32,8 +32,9 @@ class Cell {
 			context.rect(
 				(this.row * cellDimension) + border_offset, 
 				(this.col * cellDimension) + border_offset, 
-				cellDimension - border_offset , 
-				cellDimension - border_offset );
+				cellDimension - border_offset, 
+				cellDimension - border_offset
+				);
 			context.fillStyle = color;
 			context.fill();
 			// remember we're on, so we can be redrawn on resize

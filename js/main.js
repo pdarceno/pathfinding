@@ -53,7 +53,7 @@ const startAStarAlgorithm = AStar.startAStarAlgorithm;
 /*========================================= A-STAR =========================================*/
 window.addEventListener('load', () => {
 	// setup the canvas
-	setup();
+	setup(true);
 
 	// setup the menu
 	menu.addEventListener('click', event => {
@@ -95,5 +95,6 @@ window.addEventListener('load', () => {
 	canvas.addEventListener('mouseup', () => {
 		mouseDown = false;
 	}); 
+	window.onresize = setup();
 });
 

@@ -10,14 +10,12 @@ body {
 
 /*header*/
 .header-container {
-	position: fixed;
-	top: 5px;
-	right: 5px;
+	display: block;
+	height: 50px;
 }
 
 .menu {
 	display: flex;
-	flex-direction: column;
 }
 
 .buttons {
@@ -61,11 +59,16 @@ body {
 }
 /*header*/
 /*canvas*/
+.container {
+	position: absolute;
+	height: calc(100% - 50px);
+	width: 100%;
+	bottom: 0;
+}
+
 .canvas {
-	height: 100vh;
-	width: 100vw;
-	margin: 0;
 	border: 1px solid green;
+	/* we let the canvas buffer's size rule its presentation dimensions */
 }
 /*canvas*/
 /*footer*/

@@ -1,14 +1,24 @@
 'use strict';
+import * as Constant from '../constants.js';
 import * as Util from '../utils.js';
 import * as Setup from '../setup.js';
-import { rowCount } from '../constants.js';
 import { timeLabel } from '../elements.js';
 
-/*========================================= NODE =========================================*/
+/*========================================= CONSTANT =========================================*/
+const closedSetColor = Constant.closedSetColor;
+const pathColor = Constant.pathColor;
+const openSetColor = Constant.openSetColor;
+const rowCount = Constant.rowCount;
+const open = Constant.open;
+const closed = Constant.closed;
+const path = Constant.path;
+const paths = Constant.paths;
+/*========================================= CONSTANT =========================================*/
+/*========================================= CELL =========================================*/
 const startCell = Util.exportStartCell;
 const endCell = Util.exportEndCell;
 const erase = Util.erase;
-/*========================================= NODE =========================================*/
+/*========================================= CELL =========================================*/
 
 /*========================================= SETUP =========================================*/
 const colCount = Setup.exportColCount;
@@ -30,7 +40,7 @@ function reconstructPath(cell, end = false) {
 	// reconstruct path backwards
 	totalPath.forEach((currentCell, i) => {
 		setTimeout(() => {
-			color('path', currentCell);
+			color(path, currentCell);
 		}, 50 * (totalPath.length - i));
 	});
 }
@@ -42,11 +52,13 @@ const startAStarAlgorithm = () => {
 	if (!startCell() && !endCell()) {
 		return;
 	}
+	
 	// counter timer multiplier
 	let counter = 0;
+
 	// reset path array
 	totalPath = [];
-	erase('paths');
+	erase(paths);
 	// openSet are all the list of cells that are passed
 	let openSet = new Array();
 	let closedSet = new Array();
@@ -61,7 +73,6 @@ const startAStarAlgorithm = () => {
 	const start = performance.now();
 	while(openSet.length > 0) {
 		let currentCell = openSet[0];
-
 		// make a heap sort for O(1)
 		for(let i = 0; i < openSet.length; i++) {
 			if(openSet[i].fScore < currentCell.fScore) {
@@ -72,7 +83,6 @@ const startAStarAlgorithm = () => {
 		//done
 		if(currentCell === endCell()) {
 			timeLabel.innerHTML = `time: ${performance.now() - start} ms`;
-			console.log('reconstruct path');
 			return reconstructPath(endCell(), true);
 		}
 		// remove currentCell to the openSet
@@ -81,7 +91,7 @@ const startAStarAlgorithm = () => {
 
 		//color the cell once pushed into the array
 		setTimeout(() => {
-			color('closed', currentCell);
+			color(closed, currentCell);
 		}, 1 * counter);
 		// assign neighbors
 		getNeighbors(currentCell);
@@ -90,6 +100,7 @@ const startAStarAlgorithm = () => {
 		for (let i = 0; i < currentCell.neighbors.length; i++) {
 			// retrieve the neigbor with lowest f value
 			let neighbor = currentCell.neighbors[i];
+
 			if (closedSet.includes(neighbor) || neighbor.isWall) {
 				// Ignore the neighbor which is already evaluated or a wall.
 				continue;
@@ -116,13 +127,11 @@ const startAStarAlgorithm = () => {
 			openSet.push(neighbor);
 			//color the cell once pushed into the array
 			setTimeout(() => {
-				color('open', neighbor);
+				color(open, neighbor);
 			}, 1 * counter);
 
 			neighbor.fScore = neighbor.gScore + calculateHScore(neighbor);
 		}
-		// increase counter
-		counter++;
 	}
 
 	console.log('failure');
@@ -131,16 +140,16 @@ const startAStarAlgorithm = () => {
 // color functions
 const color = (which, cell) => {
 	switch (which) {
-		case 'open':
-			cell.show('blue');
+		case open:
+			cell.show(openSetColor);
 			return;
 		
-		case 'closed':
-			cell.show('orange');
+		case closed:
+			cell.show(closedSetColor);
 			return;
 		
-		case 'path':
-			cell.show('yellow');
+		case path:
+			cell.show(pathColor);
 			return;
 
 		default:

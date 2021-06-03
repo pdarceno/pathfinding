@@ -1,16 +1,18 @@
 'use strict';
 import { context } from './elements.js';
-import * as Constant from './constants.js';
-
-const cellDimension = Constant.cellDimension;
+import { cellDimension } from './constants.js';
 
 class Cell {
 	constructor (row, col) {
 		// save current index (row, col) to know where in the canvas it is
 		this.row = row;
 		this.col = col;
-		// check if is a path
-		this.isPath = false;
+		// check if is path
+		// this.isPath = true;
+		// // check if is start
+		// this.isStart = false;
+		// // check if is end
+		// this.isEnd = false;
 		// check if is an obstacle
 		this.isWall = false;
 		// the weight of the Cell for weighted pathfinding
@@ -25,11 +27,20 @@ class Cell {
 		this.neighbors = new Array();
 
 		this.show = color => {
+			const border_offset = context.lineWidth;
 			context.beginPath();
-			context.rect((this.row * cellDimension) + 1, (this.col * cellDimension) + 1, cellDimension - 2, cellDimension - 2);
+			context.rect(
+				(this.row * cellDimension) + border_offset, 
+				(this.col * cellDimension) + border_offset, 
+				cellDimension - border_offset , 
+				cellDimension - border_offset );
 			context.fillStyle = color;
 			context.fill();
+			// remember we're on, so we can be redrawn on resize
+			this.color = color;
 		}
+
+
 	}
 }
 
@@ -37,4 +48,8 @@ class Cell {
 let startCell = new Cell();
 let endCell = new Cell();
 
-export { startCell, endCell, Cell };
+export { 
+	startCell, 
+	endCell, 
+	Cell 
+};

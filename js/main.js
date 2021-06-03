@@ -1,9 +1,18 @@
 'use strict';
+import * as Constant from './constants.js';
 import * as Element from './elements.js';
 import * as Setup from './setup.js';
 import * as Util from './utils.js';
 import * as AStar from './pathfinding/aStar.js';
+import * as RecursiveDivision from './MAZE/recursiveDivision.js';
 
+/*========================================= CONSTANT =========================================*/
+const start = Constant.start;
+const end = Constant.end;
+const wall = Constant.wall;
+const walls = Constant.walls;
+const all = Constant.all;
+/*========================================= CONSTANT =========================================*/
 /*========================================= ELEMENTS =========================================*/
 const menu = Element.menu;
 const startButton = Element.startButton;
@@ -12,7 +21,9 @@ const wallButton = Element.wallButton;
 const eraseWallButton = Element.eraseWallButton;
 const eraseAllWallsButton = Element.eraseAllWallsButton;
 const eraseAllButton = Element.eraseAllButton;
+const mazeButton = Element.mazeButton;
 const calculateButton = Element.calculateButton;
+
 
 const canvas = Element.canvas;
 const context = Element.context;
@@ -34,6 +45,9 @@ const getMousePosition = Util.getMousePosition;
 /*========================================= UTILS =========================================*/
 
 /*========================================= SETUP =========================================*/
+/*========================================= RECURSIVE DIVISION =========================================*/
+const startRecursiveDivision = RecursiveDivision.startRecursiveDivision;
+/*========================================= RECURSIVE DIVISION =========================================*/
 /*========================================= A-STAR =========================================*/
 const startAStarAlgorithm = AStar.startAStarAlgorithm;
 /*========================================= A-STAR =========================================*/
@@ -47,29 +61,35 @@ window.addEventListener('load', () => {
 			const buttonSelected = event.target.closest('.buttons');
 			
 			disableButtons(buttonSelected);
-			buttonSelected.classList.toggle('active');
+			!buttonSelected.classList.contains('active') && buttonSelected.classList.add('active');
 
-			buttonSelected.classList.contains('erase-all-walls-button') && erase('walls');
-			buttonSelected.classList.contains('erase-all-button') && erase('all');
-			buttonSelected.classList.contains('calculate-button') && startAStarAlgorithm();
+			buttonSelected === eraseAllWallsButton && erase(walls);
+			buttonSelected === eraseAllButton && erase(all);
+			buttonSelected === mazeButton && startRecursiveDivision();
+			buttonSelected === calculateButton && startAStarAlgorithm();
 		}
 	});
 
 	let mouseDown = false;
 
 	canvas.addEventListener('mousedown', event => {
-		startButton.classList.contains('active') && place('start', getMousePosition(event));
-		endButton.classList.contains('active') && place('end', getMousePosition(event));
-		wallButton.classList.contains('active') && place('wall', getMousePosition(event));
+		startButton.classList.contains('active') && place(start, getMousePosition(event));
+		endButton.classList.contains('active') && place(end, getMousePosition(event));
+		wallButton.classList.contains('active') && place(wall, getMousePosition(event));
 		eraseWallButton.classList.contains('active') && eraseWall(getMousePosition(event));
-		eraseAllWallsButton.classList.contains('active') && erase('walls');
-		eraseAllButton.classList.contains('active') && erase('all');
+		eraseAllWallsButton.classList.contains('active') && erase(walls);
+		eraseAllButton.classList.contains('active') && erase(all);
 		mouseDown = true;
 	});
 
 	canvas.addEventListener('mousemove', event => {
-		mouseDown && wallButton.classList.contains('active') && place('wall', getMousePosition(event));
-		mouseDown && eraseWallButton.classList.contains('active') && eraseWall(getMousePosition(event));
+		if (mouseDown) {
+			startButton.classList.contains('active') && place(start, getMousePosition(event));
+			endButton.classList.contains('active') && place(end, getMousePosition(event));
+			wallButton.classList.contains('active') && place(wall, getMousePosition(event));
+			eraseWallButton.classList.contains('active') && eraseWall(getMousePosition(event));
+			eraseAllWallsButton.classList.contains('active') && erase(walls);
+		}
 	}); 
 
 	canvas.addEventListener('mouseup', () => {

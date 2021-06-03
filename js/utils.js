@@ -1,8 +1,23 @@
 'use strict';
+import * as  Constant from './constants.js';
 import { canvas, context } from './elements.js';
-import { rowCount, canvasWidth } from './constants.js';
-import { gridArray, exportColCount } from './setup.js';
+import { gridArray } from './setup.js';
 import * as _Cell from './cell.js';
+
+/*========================================= CONSTANT =========================================*/
+const start = Constant.start;
+const end = Constant.end;
+const wall = Constant.wall;
+const walls = Constant.walls;
+const paths = Constant.paths;
+const all = Constant.all;
+/*========================================= CONSTANT =========================================*/
+const startColor = Constant.startColor;
+const endColor = Constant.endColor;
+const wallColor = Constant.wallColor;
+const backgroundColor = Constant.backgroundColor;
+const rowCount = Constant.rowCount;
+const canvasWidth = Constant.canvasWidth;
 
 // startCell, endCell, Cell
 let startCell = _Cell.startCell;
@@ -17,21 +32,23 @@ const disableButtons = exception => {
 // place functions
 const place = (which, position) => {
 	switch (which) {
-		case 'start':
+		case start:
 			startCell && erase(which);
+			gridArray[position.x][position.y].isWall = false;
 			startCell = gridArray[position.x][position.y];
-			startCell.show('green');
+			startCell.show(startColor);
 			return;
 		
-		case 'wall':
+		case wall:
 			gridArray[position.x][position.y].isWall = true;
-			gridArray[position.x][position.y].show('black');
+			gridArray[position.x][position.y].show(wallColor);
 			return;
 		
-		case 'end':
+		case end:
 			endCell && erase(which);
+			gridArray[position.x][position.y].isWall = false;
 			endCell = gridArray[position.x][position.y];
-			endCell.show('red');
+			endCell.show(endColor);
 			return;
 
 		default:
@@ -42,50 +59,50 @@ const place = (which, position) => {
 // erase functions
 const erase = which => {
 	switch (which) {
-		case 'start':
-			startCell.show('#ddd');
+		case start:
+			startCell.show(backgroundColor);
 			startCell = null;
 			return;
 		
-		case 'walls':
+		case walls:
 			gridArray.forEach(array => {
 				array.forEach(cell => {
 					if (cell.isWall) {
 						cell.isWall = false;
-						cell.show('#ddd');
+						cell.show(backgroundColor);
 					}
 				});
 			});
 			return;
 		
-		case 'end':
-			endCell.show('#ddd');
+		case end:
+			endCell.show(backgroundColor);
 			endCell = null;
 			return;		
 
-		case 'paths':
+		case paths:
 			// reset color and status of anything not a wall
 			gridArray.forEach(array => {
 				array.forEach(cell => {
 					if (!cell.isWall) {
 						cell.isPath = false;
 						cell.weight = 0;
-						cell.show('#ddd');
+						cell.show(backgroundColor);
 					}
 				});
 			});
 			return;
 
-		case 'all':
-			startCell && erase('start');
-			endCell && erase('end');
+		case all:
+			startCell && erase(start);
+			endCell && erase(end);
 
 			gridArray.forEach(array => {
 				array.forEach(cell => {
 					cell.isPath = false;
 					cell.isWall = false;
 					cell.weight = 0;
-					cell.show('#ddd');
+					cell.show(backgroundColor);
 				});
 			});
 			return;
@@ -99,7 +116,7 @@ const erase = which => {
 const eraseWall = position => {
 	if (gridArray[position.x][position.y].isWall) {
 		gridArray[position.x][position.y].isWall = false;
-		gridArray[position.x][position.y].show('#ddd');
+		gridArray[position.x][position.y].show(backgroundColor);
 	}
 }
 
@@ -138,7 +155,6 @@ const getMousePosition = event => {
 	}
 
 	const position = {x: cellX, y: cellY};
-	console.log(exportColCount())
 	return position;
 }
 
@@ -152,4 +168,12 @@ const exportEndCell = () => {
 	return endCell;
 }
 
-export { disableButtons, place, erase, eraseWall, getMousePosition, exportStartCell, exportEndCell };
+export { 
+	disableButtons, 
+	place, 
+	erase,
+	eraseWall, 
+	getMousePosition, 
+	exportStartCell, 
+	exportEndCell 
+};

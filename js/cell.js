@@ -1,6 +1,6 @@
 'use strict';
 import { context } from './elements.js';
-import { cellDimension } from './constants.js';
+import { cellDimension, borderOffset } from './constants.js';
 
 class Cell {
 	constructor (row, col) {
@@ -27,13 +27,12 @@ class Cell {
 		this.neighbors = new Array();
 
 		this.show = color => {
-			const border_offset = context.lineWidth;
 			context.beginPath();
 			context.rect(
-				(this.row * cellDimension) + border_offset, 
-				(this.col * cellDimension) + border_offset, 
-				cellDimension - border_offset, 
-				cellDimension - border_offset
+				(this.row * cellDimension) + borderOffset, 
+				(this.col * cellDimension) + borderOffset, 
+				cellDimension - borderOffset, 
+				cellDimension - borderOffset
 				);
 			context.fillStyle = color;
 			context.fill();

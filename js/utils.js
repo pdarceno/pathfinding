@@ -139,6 +139,7 @@ const getMousePosition = event => {
 	context.lineTo(x, y); // to
 
 	context.stroke(); // draw it
+	context.closePath();
 
 	// bounds of the square unit can depend on just row
 	const bounds = canvasWidth / rowCount;

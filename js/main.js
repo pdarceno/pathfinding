@@ -95,6 +95,9 @@ window.addEventListener('load', () => {
 	canvas.addEventListener('mouseup', () => {
 		mouseDown = false;
 	}); 
-	window.onresize = setup();
+
+	// window.addEventListener('resize', () => {
+	// 	setup();
+	// });
 });
 

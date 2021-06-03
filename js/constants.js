@@ -27,14 +27,16 @@ const closed = 'closed';
 
 // get the size of the container measured by CSS
 // remove 1 lineWidth for outer strokes
-canvas.width = canvasContainer.offsetWidth - context.lineWidth;
-canvas.height = canvasContainer.offsetHeight - context.lineWidth;
+canvas.width = canvasContainer.offsetWidth;
+canvas.height = canvasContainer.offsetHeight;
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
+const borderOffset = context.lineWidth;
 // fixed
 const rowCount = 80;
 // cellDimension must be an integer
 const cellDimension = Math.floor(canvasWidth / rowCount);
+const gridWidth = cellDimension * rowCount;
 
 export { 
 	wallColor,
@@ -55,6 +57,8 @@ export {
 	closed,
 	canvasWidth, 
 	canvasHeight, 
+	borderOffset,
 	rowCount, 
-	cellDimension
+	cellDimension,
+	gridWidth
 };

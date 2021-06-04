@@ -29,14 +29,16 @@ const recursiveDivision = (cell, width, height, isVertical) => {
 	let newWidth = width;
 	let newHeight = height;
 
-	// build the wall
+	// build the wall from left to right or from up to down
 	buildWall(cell, isVertical);
 	// assign a new width if vertical, else assign a new height
 	isVertical ? newWidth = rowCount - cell.row : newHeight = colCount() - cell.col;
-
+	// newX is a new random x ranging from the current cell row to cell row + width if the new width is greater than height
 	const newX = newWidth > newHeight ? getRandom(cell.row, cell.row + newWidth) : cell.row;
+	// newY is a new random y ranging from the current cell col to cell col + height if the new height is greater than width
 	const newY = newWidth > newHeight ? cell.col : getRandom(cell.col, cell.col + newHeight);
 
+	// right and down
 	recursiveDivision(gridArray[newX][newY], newWidth, newHeight, newWidth > newHeight);
 }
 

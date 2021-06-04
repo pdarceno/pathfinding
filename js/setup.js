@@ -64,6 +64,34 @@ const setupGrid = () => {
 			gridArray[i][j] = new Cell(i, j);
 		}
 	}
+
+	// setup neighbors
+	for (let i = 0; i < rowCount; i++) {
+		for (let j = 0; j < colCount; j++) {
+			getNeighbors(gridArray[i][j]);
+		}
+	}
+}
+
+
+
+const getNeighbors = currentCell => {
+	const rowLimit = rowCount - 1;
+	const colLimit = colCount - 1;
+
+	let currentRow = currentCell.row;
+	let currentCol = currentCell.col;
+	// reset neighbors
+	currentCell.neighbors = [];
+	// loop through neigbors and add to each individual current cell 
+	// minimum index is always 0. Maximum index is always each respective limit
+	for(let i = Math.max(0, currentRow - 1); i <= Math.min(currentRow + 1, rowLimit); i++) {
+		for(let j = Math.max(0, currentCol - 1); j <= Math.min(currentCol + 1, colLimit); j++) {
+			if(i !== currentRow || j !== currentCol) {
+				currentCell.neighbors.push(gridArray[i][j]);
+			}
+		}
+	}
 }
 
 // function to export the variable colcount

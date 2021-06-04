@@ -94,8 +94,6 @@ const startAStarAlgorithm = () => {
 		setTimeout(() => {
 			color(closed, currentCell);
 		}, 1 * counter);
-		// assign neighbors
-		getNeighbors(currentCell);
 
 		// //check cell's neighbors
 		for (let i = 0; i < currentCell.neighbors.length; i++) {
@@ -155,25 +153,6 @@ const color = (which, cell) => {
 
 		default:
 			return;
-	}
-}
-
-const getNeighbors = currentCell => {
-	const rowLimit = rowCount - 1;
-	const colLimit = colCount() - 1;
-
-	let currentRow = currentCell.row;
-	let currentCol = currentCell.col;
-	// reset neighbors
-	currentCell.neighbors = [];
-	// loop through neigbors and add to each individual current cell 
-	// minimum index is always 0. Maximum index is always each respective limit
-	for(let i = Math.max(0, currentRow - 1); i <= Math.min(currentRow + 1, rowLimit); i++) {
-		for(let j = Math.max(0, currentCol - 1); j <= Math.min(currentCol + 1, colLimit); j++) {
-			if(i !== currentRow || j !== currentCol) {
-				currentCell.neighbors.push(gridArray[i][j]);
-			}
-		}
 	}
 }
 

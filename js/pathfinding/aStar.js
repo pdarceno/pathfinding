@@ -59,8 +59,9 @@ const startAStarAlgorithm = () => {
 	// reset path array
 	totalPath = [];
 	erase(paths);
-	// openSet are all the list of cells that are passed
+	// openSet are all the list of cells that are to be checked
 	let openSet = new Array();
+	// closedSet are all the list of cells that passed
 	let closedSet = new Array();
 	/* For cell n, cameFrom[n] is the cell immediately preceding it on the cheapest path from start
 	to n currently known. */

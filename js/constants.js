@@ -33,6 +33,7 @@ const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 const borderOffset = context.lineWidth;
 // fixed
+// optimal is 80
 const rowCount = 80;
 // cellDimension must be an integer
 const cellDimension = Math.floor(canvasWidth / rowCount);

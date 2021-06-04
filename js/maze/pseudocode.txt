@@ -1,0 +1,3 @@
+1. Randomly build a wall within this space, if width > height build vertically.
+2. Randomly build a path within this wall.
+3. Recurse on both sides of the wall.

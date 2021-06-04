@@ -18,47 +18,42 @@ const totalPath = Setup.totalPath;
 
 /*========================================= START OF A RECURSIVE DIVISION ALGORITHM =========================================*/
 
-// checkArray is the list of elements to be checked
-let checkArray = new Array();
-
-const recursiveDivision = (cell, width, height, isVertical) => {
-	if (height < 2 || width < 2) {
+const recursiveDivision = (grid, cell, width, height, tempCounter) => {
+	if (
+		height < 2 
+		|| width < 2 
+	) {
 		return;
 	}
-	
-	let newWidth = width;
-	let newHeight = height;
 
+	if (tempCounter === 2) {
+		return;
+	}
+	tempCounter++;
+	// width > height, build wall vertically
 	// build the wall
-	buildWall(cell, isVertical);
-	// assign a new width if vertical, else assign a new height
-	isVertical ? newWidth = rowCount - cell.row : newHeight = colCount() - cell.col;
-
-	const newX = newWidth > newHeight ? getRandom(cell.row, cell.row + newWidth) : cell.row;
-	const newY = newWidth > newHeight ? cell.col : getRandom(cell.col, cell.col + newHeight);
-
-	recursiveDivision(gridArray[newX][newY], newWidth, newHeight, newWidth > newHeight);
+	buildWall(cell, width > height);
+	if (width > height) {
+		const rightWidth = width - cell.row;
+		// create new 2darray per block of size width x height
+		const newRightGrid = new Array(rightWidth, height);
+		console.log(newRightGrid);
+		// recurse right and left respectively
+		// recursiveDivision(gridArray[cell.row][cell.col],)
+	}
+	else{
+		// recurse up and down
+	}
 }
 
 const startRecursiveDivision = () => {
-	/*
-	x is the current position in currentRowCount
-	y is the current position in currentColCount
-
-	width is currentRowCount
-	height is currentColCount
-
-	isVertical:
-	if width > height orientation vertical divide
-	*/
-	
 	let x = 0;
 	let y = 0;
 
 	x = rowCount > colCount() ? getRandom(x, rowCount) : 0;
 	y = rowCount > colCount() ? 0 : getRandom(y, colCount());
 
-	recursiveDivision(gridArray[x][y], rowCount, colCount(), rowCount > colCount());
+	recursiveDivision(gridArray, gridArray[x][y], rowCount, colCount(), 0);
 }
 
 // build a wall
@@ -80,14 +75,12 @@ const buildWall = (start, isVertical) => {
 	}
 }
 
-
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
  */
 const getRandom = (min, max) => {
-	return Math.floor((Math.random() * (((max - 1) - (min + 2))) + (min + 2)));	
+	return Math.floor((Math.random() * (((max - 2) - (min + 2))) + (min + 2)));	
 };
-
 /*========================================= START OF A RECURSIVE DIVISION ALGORITHM =========================================*/
 
 export { startRecursiveDivision };

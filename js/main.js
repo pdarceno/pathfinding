@@ -95,7 +95,7 @@ window.addEventListener('load', () => {
 			eraseAllWallsButton.classList.contains('active') && erase(walls);
 		}
 	}); 
-
+ 
 	canvas.addEventListener('mouseup', () => {
 		mouseDown = false;
 	}); 

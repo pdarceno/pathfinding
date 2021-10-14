@@ -14,74 +14,60 @@ const erase = Util.erase;
 const colCount = Setup.exportColCount;
 const gridArray = Setup.gridArray;
 const totalPath = Setup.totalPath;
+const resetGrid = Setup.resetGrid;
 /*========================================= SETUP =========================================*/
 
 /*========================================= START OF A RECURSIVE DIVISION ALGORITHM =========================================*/
 
-// checkArray is the list of elements to be checked
-let checkArray = new Array();
+// cellArray is the list of elements checked
+let cellArray = new Array();
+const finalColCount = colCount();
+let done = false;
 
-const recursiveDivision = (cell, width, height, isVertical) => {
-	if (height < 2 || width < 2) {
+const recursiveDivision = (grid, cell, tempCounter) => {
+	// Recursion Termination
+	if (grid.length < 3 || grid[0].length < 3) {
 		return;
 	}
-	
-	let newWidth = width;
-	let newHeight = height;
 
-	// build the wall from left to right or from up to down
-	buildWall(cell, isVertical);
-	// assign a new width if vertical, else assign a new height
-	isVertical ? newWidth = rowCount - cell.row : newHeight = colCount() - cell.col;
-	// newX is a new random x ranging from the current cell row to cell row + width if the new width is greater than height
-	const newX = newWidth > newHeight ? getRandom(cell.row, cell.row + newWidth) : cell.row;
-	// newY is a new random y ranging from the current cell col to cell col + height if the new height is greater than width
-	const newY = newWidth > newHeight ? cell.col : getRandom(cell.col, cell.col + newHeight);
+	if (tempCounter === 3) {
+		return;
+	}
+	tempCounter++;
 
-	// right and down
-	recursiveDivision(gridArray[newX][newY], newWidth, newHeight, newWidth > newHeight);
+	// build wall vertically if width is greater
+	// const isVertical = grid.length > grid[0].length;
+	const isVertical = true;
+
+	// select a cell within the width and height for the base coordinate of the wall
+	const newX = getRandom(cell.row, grid.length);
+	const newY =  getRandom(cell.col, grid[0].length);
+
+	const dividedGridArray = isVertical ? buildVertical(gridArray[newX][newY]) : buildHorizontal(gridArray[newX][newY]);
+
+	if (isVertical) {
+		// left fixed
+		const leftGrid = dividedGridArray[0];
+		console.log(leftGrid);
+		console.log(leftGrid[0][0]);
+		// recursiveDivision(leftGrid, leftGrid[0][0], tempCounter);
+		// right broken
+		// const rightGrid = setupVerticalGrid(gridArray[newX][newY], newX, grid[0].length, true);
+		// recursiveDivision(rightGrid, rightGrid[0][0], tempCounter);
+		return;
+	}
+	// top
+	// setup vertical grid at left
+	// const topGrid = setupHorizontalGrid((gridArray[newX][newY]), grid.length, newY, false);
+	// recursiveDivision(topGrid, topGrid[0][0], tempCounter);
+	// bot
+	const bottomGrid = setupHorizontalGrid((gridArray[newX][newY]), grid.length, finalColCount - newY, true);
+	recursiveDivision(bottomGrid, bottomGrid[0][0], tempCounter);
 }
 
 const startRecursiveDivision = () => {
-	/*
-	x is the current position in currentRowCount
-	y is the current position in currentColCount
-
-	width is currentRowCount
-	height is currentColCount
-
-	isVertical:
-	if width > height orientation vertical divide
-	*/
-	
-	let x = 0;
-	let y = 0;
-
-	x = rowCount > colCount() ? getRandom(x, rowCount) : 0;
-	y = rowCount > colCount() ? 0 : getRandom(y, colCount());
-
-	recursiveDivision(gridArray[x][y], rowCount, colCount(), rowCount > colCount());
+	recursiveDivision(gridArray, gridArray[0][0], rowCount, finalColCount, 0);
 }
-
-// build a wall
-const buildWall = (start, isVertical) => {
-	let i = 0;
-	if (isVertical) {
-		while (gridArray[start.row][i + start.col] !== undefined) {
-			gridArray[start.row][i + start.col].isWall = true;
-			gridArray[start.row][i + start.col].show(wallColor);
-			i++;
-		}
-		return;
-	}
-
-	while (gridArray[i + start.row] !== undefined) {
-		gridArray[i + start.row][start.col].isWall = true;
-		gridArray[i + start.row][start.col].show(wallColor);
-		i++;
-	}
-}
-
 
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
@@ -89,6 +75,234 @@ const buildWall = (start, isVertical) => {
 const getRandom = (min, max) => {
 	return Math.floor((Math.random() * (((max - 1) - (min + 2))) + (min + 2)));	
 };
+
+// build a wall
+const buildVertical = (start, isDown) => {
+	// if building the check if either a wall or undefined to stop
+	let iUp = 1;
+	let iDown = 1;
+	while (gridArray[start.row][iUp + start.col] !== undefined) {
+		if (gridArray[start.row][iUp + start.col].isWall){
+			return;
+		}
+		gridArray[start.row][iUp + start.col].isWall = true;
+		gridArray[start.row][iUp + start.col].show(wallColor);
+		iUp ++;
+	}
+
+	while (gridArray[start.row][start.col - iDown] !== undefined) {
+		if (gridArray[start.row][start.col - iDown].isWall){
+			return;
+		}
+		gridArray[start.row][start.col - iDown].isWall = true;
+		gridArray[start.row][start.col - iDown].show('red');
+		iDown++;
+	}
+	// // since it started at 1 + row, add wall for the passed cell at finish
+	// start.isWall = true;
+	// start.show('red');
+
+	let dividedGridArray = new Array();
+	let leftGrid = new Array();
+	let rightGrid = new Array();
+	let gridHeight = iUp + iDown;
+	let iBounds = 1;
+	// left grid to return
+	while (gridArray[start.row - iBounds] !== undefined) {
+		if (gridArray[start.row - iBounds][start.col].isWall){
+			return;
+		}
+		leftGrid[iBounds - 1] = new Array(gridHeight);
+		iUp = 1;
+		iDown = 1;
+		while (gridArray[start.row - iBounds][iUp + start.col] !== undefined) {
+			if (gridArray[start.row - iBounds][iUp + start.col].isWall){
+				return;
+			}
+			leftGrid[iBounds - 1][iUp - 1] = gridArray[start.row - iBounds][iUp + start.col];
+			iUp ++;
+		}
+
+		while (gridArray[start.row - iBounds][start.col - iDown] !== undefined) {
+			if (gridArray[start.row - iBounds][start.col - iDown].isWall){
+				return;
+			}
+			leftGrid[iBounds - 1][start.col + iDown] = gridArray[start.row - iBounds][start.col - iDown];
+			iDown++;
+		}
+
+		iBounds++;
+	}
+
+	// right grid to return
+	iBounds = 1;
+	while (gridArray[start.row + iBounds] !== undefined) {
+		if (gridArray[start.row + iBounds][start.col].isWall){
+			return;
+		}
+		rightGrid[iBounds - 1] = new Array(gridHeight);
+		iUp = 1;
+		iDown = 1;
+		while (gridArray[start.row + iBounds][iUp + start.col] !== undefined) {
+			if (gridArray[start.row + iBounds][iUp + start.col].isWall){
+				return;
+			}
+			rightGrid[iBounds - 1][iUp - 1] = gridArray[start.row + iBounds][iUp + start.col];
+			iUp ++;
+		}
+
+		while (gridArray[start.row + iBounds][start.col - iDown] !== undefined) {
+			if (gridArray[start.row + iBounds][start.col - iDown].isWall){
+				return;
+			}
+			rightGrid[iBounds - 1][start.col + iDown] = gridArray[start.row + iBounds][start.col - iDown];
+			iDown++;
+		}
+
+		iBounds++;
+	}
+
+	dividedGridArray.push(leftGrid);
+	dividedGridArray.push(rightGrid);
+	return dividedGridArray;
+}
+
+const buildHorizontal = (start, isRight) => {
+	// if building the check if either a wall or undefined to stop
+	let iRight = 1;
+	let iLeft = 1;
+
+	while (gridArray[iRight + start.row] !== undefined) {
+		if (gridArray[iRight + start.row][start.col].isWall){
+			return;
+		}
+		gridArray[iRight + start.row][start.col].isWall = true;
+		gridArray[iRight + start.row][start.col].show(wallColor);
+		iRight++;
+	}
+	
+	while (gridArray[start.row - iLeft] !== undefined) {
+		if (gridArray[start.row - iLeft][start.col].isWall){
+			return;
+		}
+		gridArray[start.row - iLeft][start.col].isWall = true;
+		gridArray[start.row - iLeft][start.col].show('blue');
+		iLeft++;
+	}
+	// // since it started at 1 + row, add wall for the passed cell at finish
+	// start.isWall = true;
+	// start.show('blue');
+
+	let dividedGridArray = new Array();
+	let topGrid = new Array();
+	let bottomGrid = new Array();
+	let gridWidth = iRight + iLeft;
+	let iBounds = 1;
+
+	// top grid to return 
+	while (gridArray[start.row][iBounds + start.col] !== undefined) {
+		if (gridArray[start.row][iBounds + start.col].isWall){
+			return;
+		}
+		topGrid[gridWidth] = new Array(/*gridHeight*/);
+		let iRight = 1;
+		let iLeft = 1;
+		while (gridArray[start.row][iBounds + start.col] !== undefined) {
+			if (gridArray[start.row][iBounds + start.col].isWall){
+				return;
+			}
+			// console.log(iBounds)
+			// topGrid[iBounds - 1][iUp - 1] = gridArray[start.row - iBounds][iUp + start.col];
+			gridArray[start.row - iBounds][iUp + start.col].show('red');
+			iUp ++;
+		}
+
+		while (gridArray[start.row][start.col - iBounds] !== undefined) {
+			if (gridArray[start.row][start.col - iBounds].isWall){
+				return;
+			}
+			// topGrid[iBounds - 1][start.col + (iDown - 1)] = gridArray[start.row - iBounds][start.col - iDown];
+			// topGrid[iBounds - 1][start.col + iDown] = gridArray[start.row - iBounds][start.col - iDown];
+			gridArray[start.row][start.col + iDown].show('red');
+			iDown++;
+		}
+		iBounds ++;
+	}
+
+	iBounds = 1;
+	while (gridArray[start.row][start.col - iBounds] !== undefined) {
+		if (gridArray[start.row][start.col - iBounds].isWall){
+			return;
+		}
+		iBounds++;
+	}
+	// while (gridArray[start.row][start.col - iBounds] !== undefined) {
+	// 	if (gridArray[start.row - iBounds][start.col].isWall){
+	// 		return;
+	// 	}
+		// topGrid[iBounds - 1] = new Array(gridHeight);
+		// iUp = 1;
+		// iDown = 1;
+		// while (gridArray[start.row - iBounds][iUp + start.col] !== undefined) {
+		// 	if (gridArray[start.row - iBounds][iUp + start.col].isWall){
+		// 		return;
+		// 	}
+		// 	// console.log(iBounds)
+		// 	topGrid[iBounds - 1][iUp - 1] = gridArray[start.row - iBounds][iUp + start.col];
+		// 	// gridArray[start.row - iBounds][iUp + start.col].show('red');
+		// 	iUp ++;
+		// }
+
+		// while (gridArray[start.row - iBounds][start.col - iDown] !== undefined) {
+		// 	if (gridArray[start.row - iBounds][start.col - iDown].isWall){
+		// 		return;
+		// 	}
+		// 	// topGrid[iBounds - 1][start.col + (iDown - 1)] = gridArray[start.row - iBounds][start.col - iDown];
+		// 	topGrid[iBounds - 1][start.col + iDown] = gridArray[start.row - iBounds][start.col - iDown];
+		// 	// gridArray[start.row - iBounds][start.col - iDown].show('red');
+		// 	iDown++;
+		// }
+
+	// 	iBounds++;
+	// }
+
+	// // right grid to return
+	// iBounds = 1;
+	// while (gridArray[start.row + iBounds] !== undefined) {
+	// 	if (gridArray[start.row + iBounds][start.col].isWall){
+	// 		return;
+	// 	}
+	// 	bottomGrid[iBounds - 1] = new Array(gridHeight);
+	// 	iUp = 1;
+	// 	iDown = 1;
+	// 	while (gridArray[start.row + iBounds][iUp + start.col] !== undefined) {
+	// 		if (gridArray[start.row + iBounds][iUp + start.col].isWall){
+	// 			return;
+	// 		}
+	// 		// console.log(iBounds)
+	// 		bottomGrid[iBounds - 1][iUp - 1] = gridArray[start.row + iBounds][iUp + start.col];
+	// 		gridArray[start.row + iBounds][iUp + start.col].show('red');
+	// 		iUp ++;
+	// 	}
+
+	// 	while (gridArray[start.row + iBounds][start.col - iDown] !== undefined) {
+	// 		if (gridArray[start.row + iBounds][start.col - iDown].isWall){
+	// 			return;
+	// 		}
+	// 		// bottomGrid[iBounds - 1][start.col + (iDown - 1)] = gridArray[start.row - iBounds][start.col - iDown];
+	// 		bottomGrid[iBounds - 1][start.col + iDown] = gridArray[start.row + iBounds][start.col - iDown];
+	// 		gridArray[start.row + iBounds][start.col - iDown].show('red');
+	// 		iDown++;
+	// 	}
+
+	// 	iBounds++;
+	// }
+
+	dividedGridArray.push(topGrid);
+	dividedGridArray.push(bottomGrid);
+	return dividedGridArray;
+}
+
 
 /*========================================= START OF A RECURSIVE DIVISION ALGORITHM =========================================*/
 

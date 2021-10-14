@@ -72,9 +72,7 @@ const setupGrid = () => {
 		}
 	}
 }
-
-
-
+// get neighbors
 const getNeighbors = currentCell => {
 	const rowLimit = rowCount - 1;
 	const colLimit = colCount - 1;
@@ -94,15 +92,25 @@ const getNeighbors = currentCell => {
 	}
 }
 
+// 
+const resetGrid = () => {
+	for (let i = 0; i < rowCount; i++) {
+		for (let j = 0; j < colCount; j++) {
+			gridArray[i][j].reset();
+		}
+	}
+}
+
 // function to export the variable colcount
 const exportColCount = () => {
 	return colCount;
 }
 
 export { 
-	exportColCount, 
 	cellDimension, 
 	gridArray, 
 	totalPath, 
-	setup 
+	setup,
+	resetGrid,
+	exportColCount
 };

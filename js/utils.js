@@ -34,9 +34,9 @@ const place = (which, position) => {
 	switch (which) {
 		case start:
 			startCell && erase(which);
-			gridArray[position.x][position.y].isWall = false;
 			startCell = gridArray[position.x][position.y];
-			startCell.show(startColor);
+			gridArray[position.x][position.y].isStart = true;
+			gridArray[position.x][position.y].show(startColor);
 			return;
 		
 		case wall:
@@ -46,9 +46,9 @@ const place = (which, position) => {
 		
 		case end:
 			endCell && erase(which);
-			gridArray[position.x][position.y].isWall = false;
 			endCell = gridArray[position.x][position.y];
-			endCell.show(endColor);
+			gridArray[position.x][position.y].isEnd = true;
+			gridArray[position.x][position.y].show(endColor);
 			return;
 
 		default:

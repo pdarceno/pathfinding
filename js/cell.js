@@ -1,18 +1,18 @@
 'use strict';
 import { context } from './elements.js';
-import { cellDimension, borderOffset } from './constants.js';
+import { cellDimension, borderOffset, backgroundColor } from './constants.js';
 
 class Cell {
 	constructor (row, col) {
 		// save current index (row, col) to know where in the canvas it is
 		this.row = row;
 		this.col = col;
-		// check if is path
-		// this.isPath = true;
-		// // check if is start
-		// this.isStart = false;
-		// // check if is end
-		// this.isEnd = false;
+		// if a start or end node
+		this.start = false;
+		this.end = false;
+		// // for building a maze
+		// this.checkedLeft = false;
+		// this.checkedTop = false;
 		// check if is an obstacle
 		this.isWall = false;
 		// the weight of the Cell for weighted pathfinding
@@ -39,8 +39,14 @@ class Cell {
 			// remember we're on, so we can be redrawn on resize
 			this.color = color;
 		}
+	}
 
-
+	reset = () => {
+		this.checkedLeft = false;
+		this.checkedTop = false;
+		this.isWall = false;
+		this.weight = 0;
+		(!this.start || !this.end) && this.show(backgroundColor);
 	}
 }
 

@@ -24,6 +24,10 @@ const eraseAllButton = Element.eraseAllButton;
 const mazeButton = Element.mazeButton;
 const calculateButton = Element.calculateButton;
 
+// comment to work
+eraseWallButton.style.display = 'none';
+eraseAllWallsButton.style.display = 'none';
+mazeButton.style.display = 'none';
 
 const canvas = Element.canvas;
 const context = Element.context;

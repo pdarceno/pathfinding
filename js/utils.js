@@ -129,17 +129,18 @@ const getMousePosition = event => {
 	let cellX = 0;
 	let cellY = 0;
 
-	context.beginPath(); // begin
+	// uncomment for debugging
+	// context.beginPath(); // begin
 
-	context.lineWidth = 5;
-	context.lineCap = 'round';
-	context.strokeStyle = 'purple';
+	// context.lineWidth = 5;
+	// context.lineCap = 'round';
+	// context.strokeStyle = 'purple';
 
-	context.moveTo(x, y); // from
-	context.lineTo(x, y); // to
+	// context.moveTo(x, y); // from
+	// context.lineTo(x, y); // to
 
-	context.stroke(); // draw it
-	context.closePath();
+	// context.stroke(); // draw it
+	// context.closePath();
 
 	// bounds of the square unit can depend on just row
 	const bounds = canvasWidth / rowCount;
